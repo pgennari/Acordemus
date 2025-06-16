@@ -1,0 +1,48 @@
+networks:
+  geral:
+    name: geral
+    external: true
+
+services:
+  # documents_server:
+  #   container_name: documents_server
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile
+  #     args:
+  #       - configuration=Debug
+  #   ports:
+  #     - 7099:7099
+  #     - 5098:5098
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=https://+:7099;http://+:5098
+  #     - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+  #     - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+  #   volumes:
+  #     - ~/.vsdbg:/remote_debugger:rw
+  #     - ~/.aspnet/https:/https:ro
+  #   depends_on:
+  #     - document_db
+  #   networks:
+  #     - geral
+
+  document_db:
+    container_name: document_db
+    hostname: document_db
+    image: mongo:latest
+    command: mongod --port 27018
+    restart: always
+    volumes:
+      - document_db:/data/db
+    ports:
+      - 27018:27018
+    environment:
+      - MONGO_INITDB_DATABASE=DocumentsStore
+      - MONGO_INITDB_ROOT_PASSWORD=dwe23f2324
+      - MONGO_INITDB_ROOT_USERNAME=root
+    networks:
+      - geral
+
+volumes:
+  document_db:
