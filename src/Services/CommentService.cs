@@ -58,7 +58,7 @@ namespace acordemus.Services
         {
             var actualComment = await _commentCollection.Find(x => x.Id == CommentId)
                                               .FirstOrDefaultAsync();
-            actualComment.Likes.Add(JsonSerializer.Deserialize<User>(context.User.FindFirst("UserData")?.Value).Id);
+            actualComment.Likes.Add(JsonSerializer.Deserialize<Person>(context.User.FindFirst("PersonData")?.Value).id);
             await _commentCollection.ReplaceOneAsync(x => x.Id == CommentId, actualComment);
             return true;
         }
@@ -66,7 +66,7 @@ namespace acordemus.Services
         {
             var actualComment = await _commentCollection.Find(x => x.Id == CommentId)
                                               .FirstOrDefaultAsync();
-            actualComment.Dislikes.Add(JsonSerializer.Deserialize<User>(context.User.FindFirst("UserData")?.Value).Id);
+            actualComment.Dislikes.Add(JsonSerializer.Deserialize<Person>(context.User.FindFirst("PersonData")?.Value).id);
             await _commentCollection.ReplaceOneAsync(x => x.Id == CommentId, actualComment);
             return true;
         }

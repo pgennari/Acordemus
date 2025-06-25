@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using System.Security.Claims;
 
@@ -8,10 +10,9 @@ namespace acordemus.Middleware
 {
     public class ExternalTokenValidatorMiddleware(
         RequestDelegate next,
-        [FromServices] IMemoryCache cache,
-        IHttpClientFactory httpClientFactory,
         IConfiguration configuration,
-        IHostEnvironment host
+        [FromServices] IMemoryCache cache,
+        [FromServices] DevKeys devKeys
     )
     {
 
@@ -30,7 +31,7 @@ namespace acordemus.Middleware
 
             if (Environment.GetEnvironmentVariable("REQUIRE_AUTHORIZATION").Equals("False"))
             {
-                AddClaimsToContext(context, "7e8436d9-0af8-4b70-9868-f2628a1aaa6c", scopeFactory);
+                AddClaimsToContext(context, "6852f8de1e618658ce399d3b", scopeFactory);
 
                 await next(context);
                 return;
@@ -61,10 +62,18 @@ namespace acordemus.Middleware
                 return;
             }
 
-            var client = httpClientFactory.CreateClient();
-            var response = await client.PostAsJsonAsync($"{configuration["AppSettings:url_auth"]}/auth/validate", new { token });
+            var tokenHandler = new JsonWebTokenHandler();
+            var tokenValidationResult = await tokenHandler.ValidateTokenAsync(
+                token,
+                new TokenValidationParameters
+                {
+                    IssuerSigningKey = devKeys.RsaSecurityKey,
+                    ValidAudience = configuration["Jwt:Audience"],
+                    ValidIssuer = configuration["Jwt:Issuer"]
+                }
+            );
 
-            if (!response.IsSuccessStatusCode)
+            if (tokenValidationResult.Exception != null)
             {
                 cache.Set(token, new ValidationResponse { Valid = false }, TimeSpan.FromMinutes(1)); // cache negativo curto
                 context.Response.StatusCode = 401;
@@ -72,7 +81,7 @@ namespace acordemus.Middleware
                 return;
             }
 
-            var validationResult = await response.Content.ReadFromJsonAsync<ValidationResponse>();
+            var validationResult = new ValidationResponse() { UserId = tokenValidationResult.Claims["sub"].ToString() , Valid = true};
             cache.Set(token, validationResult, TimeSpan.FromMinutes(15)); // cache positivo
 
             AddClaimsToContext(context, validationResult.UserId, scopeFactory);
@@ -98,5 +107,6 @@ namespace acordemus.Middleware
             public bool Valid { get; set; }
             public string UserId { get; set; }
         }
+
     }
 }

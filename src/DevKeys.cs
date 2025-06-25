@@ -13,7 +13,6 @@ namespace acordemus
             var path = Path.Combine(env.ContentRootPath, "cripto_key");
             if (File.Exists(path))
             {
-                var rsaKey = RSA.Create();
                 RsaKey.ImportRSAPrivateKey(File.ReadAllBytes(path), out _);
             }
             else

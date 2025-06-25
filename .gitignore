@@ -362,3 +362,9 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /cripto_key
+/Services/LoginService.cs
+/Endpoints/Users.cs
+/Endpoints/UserEndpoints.cs
+/Services/SubscriptionService.cs
+/Services/UserService.cs
+/Endpoints/NotificationEnpoints.cs

@@ -4,27 +4,27 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace acordemus.Models
 {
-    public class People
+    public class Person
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }
+        public string? id { get; set; }
         [BsonElement]
-        public string? Name { get; set; }
+        public string? name { get; set; }
         [BsonElement]
-        public string? Email { get; set; }
+        public string? email { get; set; }
         [BsonElement]
-        public string? PhoneNumber { get; set; }
+        public string? phoneNumber { get; set; }
         [BsonElement]
-        public string? SocialName { get; set; }
+        public string? socialName { get; set; }
+        [BsonElement]
+        public string? cpf { get; set; }
         [BsonElement]
         public DateTime? CreatedAt { get; set; }
         [BsonElement]
         public DateTime? UpdatedAt { get; set; }
         [BsonElement]
-        public string? Otp { get; set; }
-        [BsonElement]
-        public DateTime? ExpiresAt { get; set; }
+        public string? UpdatedBy { get; set; }
         // Navigation property for roles
         [BsonIgnore]
         public Dictionary<Condo, Role> Roles { get; set; } = new();
