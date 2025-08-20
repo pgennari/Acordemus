@@ -1,0 +1,19 @@
+
+<button type="button" class="mx-auto flex items-center gap-2 p-2 cursor-pointer" id="dropdownDefaultButton" data-dropdown-toggle="dropdown">
+    <a class="text-2xl" routerLink="/search">
+    <i class="fa-solid fa-building"></i>
+    </a>
+    <span class="hidden md:block text-base">{{ selectedCondo?.name || 'Selecione' }}</span>
+    <span class="text-base md:hidden">{{ selectedCondo?.shortName || 'Selecione' }}</span>
+    <a class="text-sm">
+    <i class="fa-solid fa-angle-down"></i>
+    </a>
+    </button>
+    <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
+    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+    <li *ngFor="let condo of unselectedCondos">
+    <a href="#" (click)="setSelectedCondo(condo)" class="hidden md:block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{{ condo.name }}</a>
+    <a href="#" (click)="setSelectedCondo(condo)" class="block md:hidden px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{{ condo.shortName }}</a>
+    </li>
+    </ul>
+    </div>

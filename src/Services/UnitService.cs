@@ -30,7 +30,7 @@ namespace acordemus.Services
             if (unitPersisted == null)
                 throw new Exception("Unit not found");
 
-            unitPersisted.Owners.Add(associateUnit.ownerId);
+            unitPersisted.Owners.Add(associateUnit.personId);
             unitPersisted.UpdatedBy = context.User.FindFirstValue("sub");
             unitPersisted.UpdatedAt = DateTime.Now;
             await _condoCollection.ReplaceOneAsync(x => x.Id == condoId, condo);
@@ -49,7 +49,7 @@ namespace acordemus.Services
             if (unitPersisted == null)
                 throw new Exception("Unit not found");
 
-            unitPersisted.Owners.Remove(associateUnit.ownerId);
+            unitPersisted.Owners.Remove(associateUnit.personId);
             unitPersisted.UpdatedBy = context.User.FindFirstValue("sub");
             unitPersisted.UpdatedAt = DateTime.Now;
             await _condoCollection.ReplaceOneAsync(x => x.Id == condoId, condo);

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using acordemus.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -94,8 +95,25 @@ namespace acordemus.Middleware
             using (var scope = scopeFactory.CreateScope())
             {
                 var database = scope.ServiceProvider.GetRequiredService<IMongoDatabase>();
+                var members = database.GetCollection<Member>("membership");
+
+                // Busca o membro pelo PersonId
+                var member = members.Find(m => m.PersonId == userId).FirstOrDefault();
 
                 var claims = new List<Claim> { new Claim("sub", userId) };
+
+                if (member != null && member.Roles != null)
+                {
+                    foreach (var role in member.Roles)
+                    {
+                        // Adiciona cada role como claim
+                        if (!string.IsNullOrEmpty(role?.Name))
+                        {
+                            claims.Add(new Claim(ClaimTypes.Role, role.Name));
+                        }
+                    }
+                }
+
                 var identity = new ClaimsIdentity(claims, "Custom");
                 context.User = new ClaimsPrincipal(identity);
 

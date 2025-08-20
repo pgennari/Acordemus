@@ -1,0 +1,54 @@
+<header class="shadow-sm pl-4 pr-4 bg-white">
+  <div class="flex gap-2 items-center">
+    <app-sidebar class="md:hidden"></app-sidebar>
+    <div class="hidden md:block">
+      <h1
+        class="text-xl font-bold text-amber-500 text-shadow-md text-shadow-gray-300"
+      >
+        Acordemus
+      </h1>
+    </div>
+    <div class="md:grow hidden md:block">
+      <div class="flex md:gap-4 justify-center">
+        <div
+          class="h-16 place-content-center border-b-2 border-b-white hover:border-b-2 hover:border-b-sky-900 cursor-pointer"
+          routerLink="/regimento"
+        >
+          Regimento
+        </div>
+        <div
+          class="h-16 place-content-center border-b-2 border-b-white hover:border-b-2 hover:border-b-sky-900 cursor-pointer"
+          routerLink="/convencao"
+        >
+          Convenção
+        </div>
+        <div
+          class="h-16 place-content-center border-b-2 border-b-white hover:border-b-2 hover:border-b-sky-900 cursor-pointer"
+          routerLink="/condominio"
+        >
+          Condomínio
+        </div>
+        <div
+          class="h-16 place-content-center border-b-2 border-b-white hover:border-b-2 hover:border-b-sky-900 cursor-pointer"
+          routerLink="/pessoas"
+        >
+          Pessoas
+        </div>
+      </div>
+    </div>
+    <app-condo-selection class="grow md:grow-0"></app-condo-selection>
+
+    <div class="hidden md:block bg-gray-300 w-px h-7"></div>
+    <div
+      class="h-16 justify-end flex items-center gap-2 p-2 cursor-pointer"
+    >
+      <a class="text-3xl md:text-2xl" routerLink="/user">
+        <i class="fa-solid fa-circle-user"></i>
+      </a>
+      <span class="hidden md:block text-base">Paulo</span>
+      <a class="text-sm" routerLink="/user">
+        <i class="fa-solid fa-angle-down"></i>
+      </a>
+    </div>
+  </div>
+</header>

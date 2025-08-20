@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+using acordemus.Enums;
 
 namespace acordemus.Models
 {
@@ -11,6 +12,18 @@ namespace acordemus.Models
         public string? CondoId { get; set; } 
         public string? Name { get; set; }
         public string? Description { get; set; }
+
+        private string _type;
+        public string? Type
+        {
+            get => _type;
+            set
+            {
+                if (!DocumentType.AllowedTypes.Contains(value))
+                    throw new ArgumentException($"Document type invalid: {value}");
+                _type = value;
+            }
+        }
         public string? CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? UpdatedBy { get; set; }

@@ -10,8 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
-builder.Services.AddAuthentication();
-builder.Services.AddAuthorization();
 builder.Services.AddAntiforgery();
 builder.Services.Configure<MongoDbSettings>(
     builder.Configuration.GetSection("MongoDbSettings")
@@ -31,13 +29,37 @@ builder.Services.AddScoped(sp =>
 });
 
 builder.Services.AddScoped<IPersonService, PersonService>();
-builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<ICondoService, CondoService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IExcerptService, ExcerptService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IUnitService, UnitService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
+
+
+builder.Services.AddAuthentication().AddJwtBearer(x =>
+{
+    x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        IssuerSigningKey = new DevKeys(builder.Environment).RsaSecurityKey,
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidIssuer = builder.Configuration["Jwt:Issuer"]
+    };
+    //x.Events = new JwtBearerEvents()
+    //{
+    //    OnTokenValidated = async context =>
+    //    {
+    //        var roleService = context.HttpContext.RequestServices.GetRequiredService<IMemberService>();
+    //        var condoId = context.HttpContext.Request.Headers["X-Condos-Id"].ToString();
+    //        var userRoles = roleService.GetPersonRoles(context.Principal!.Identity.Name, condoId);
+    //        var userClaims = userRoles.Result.Select(role => new Claim(ClaimTypes.Role, role.Name));
+    //        ((ClaimsIdentity)context.Principal!.Identity).AddClaims(userClaims);
+    //    },
+    //};
+});
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 app.UseAuthentication();
@@ -52,6 +74,7 @@ app.MapDocumentEndpoints();
 app.MapExcerptEndpoints();
 app.MapLoginEndpoints();
 app.MapUnitEndpoints();
+app.MapMemberEndpoints();
 app.Run();
 
 

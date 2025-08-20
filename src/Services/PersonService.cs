@@ -13,7 +13,7 @@ namespace acordemus.Services
         Task DeleteAsync(string id);
 
     }
-    public class PersonService(IMongoDatabase database,IRoleService roleService) : IPersonService
+    public class PersonService(IMongoDatabase database,IMemberService roleService) : IPersonService
     {
         private readonly IMongoCollection<Person> _peopleCollection = database.GetCollection<Person>("people");
         public async Task<Person> CreateAsync(Person person, HttpContext context)

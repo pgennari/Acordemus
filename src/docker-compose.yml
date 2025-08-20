@@ -1,7 +1,6 @@
 networks:
   geral:
     name: geral
-    external: true
 
 services:
   # documents_server:
