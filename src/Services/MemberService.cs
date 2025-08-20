@@ -7,7 +7,7 @@ namespace acordemus.Services
     public interface IMemberService
     {
         Task<bool> PersonHasRoleAsync(string personId, string condoId, string roleName);
-        Task<Member> CreateMamberAsync(Member member, HttpContext context);
+        Task<Member> CreateMamberAsync(Member member, HttpContext? context);
         Task<bool> UpdateMemberAsync(Member member, HttpContext context);
         Task<List<Role>> GetPersonRoles(Member member);
     }
@@ -30,12 +30,12 @@ namespace acordemus.Services
             return false;
         }
 
-        public async Task<Member> CreateMamberAsync(Member member, HttpContext context)
+        public async Task<Member> CreateMamberAsync(Member member, HttpContext? context)
         {
             if (member == null)
                 throw new ArgumentNullException(nameof(member));
 
-            member.CreatedBy = context.User.FindFirstValue("sub");
+            member.CreatedBy = context?.User?.FindFirstValue("sub") ?? string.Empty;
             member.CreatedAt = DateTime.Now;
             
             await _membershipCollection.InsertOneAsync(member);

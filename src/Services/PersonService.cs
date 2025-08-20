@@ -1,6 +1,5 @@
 ﻿using acordemus.Models;  
 using MongoDB.Driver;
-using System.Security.Claims;
 
 namespace acordemus.Services
 {
@@ -8,18 +7,35 @@ namespace acordemus.Services
     {
         Task<List<Person>> GetAsync(string expand);
         Task<Person> GetByIdAsync(string id, string expand);
-        Task<Person> CreateAsync(Person person, HttpContext context);
+        Task<Person> CreateAsync(Person person, HttpContext context, string? inviteToken);
         Task UpdateAsync(string id, Person person, HttpContext context);
         Task DeleteAsync(string id);
 
     }
-    public class PersonService(IMongoDatabase database,IMemberService roleService) : IPersonService
+    public class PersonService(IMongoDatabase database, IMemberService roleService, IInvitationService invitationService) : IPersonService
     {
         private readonly IMongoCollection<Person> _peopleCollection = database.GetCollection<Person>("people");
-        public async Task<Person> CreateAsync(Person person, HttpContext context)
+        private readonly IMemberService _memberService = roleService;
+        private readonly IInvitationService _invitationService = invitationService;
+
+        public async Task<Person> CreateAsync(Person person, HttpContext context, string? inviteToken)
         {
             person.CreatedAt = DateTime.Now;
             await _peopleCollection.InsertOneAsync(person);
+            if (!string.IsNullOrEmpty(inviteToken) && !string.IsNullOrEmpty(person.id))
+            {
+                var invitation = await _invitationService.GetByTokenAsync(inviteToken);
+                if (invitation != null)
+                {
+                    var member = new Member
+                    {
+                        PersonId = person.id,
+                        CondoId = invitation.CondoId
+                    };
+                    await _memberService.CreateMamberAsync(member, null);
+                    await _invitationService.MarkAsAcceptedAsync(inviteToken);
+                }
+            }
             return person;
         }
 
