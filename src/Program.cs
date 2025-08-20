@@ -36,6 +36,7 @@ builder.Services.AddScoped<IExcerptService, ExcerptService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IUnitService, UnitService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<IInvitationService, InvitationService>();
 
 
 builder.Services.AddAuthentication().AddJwtBearer(x =>
@@ -75,6 +76,7 @@ app.MapExcerptEndpoints();
 app.MapLoginEndpoints();
 app.MapUnitEndpoints();
 app.MapMemberEndpoints();
+app.MapInvitationEndpoints();
 app.Run();
 
 
