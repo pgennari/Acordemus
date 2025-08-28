@@ -368,3 +368,4 @@ FodyWeavers.xsd
 /Services/SubscriptionService.cs
 /Services/UserService.cs
 /Endpoints/NotificationEnpoints.cs
+/src/appsettings.json
